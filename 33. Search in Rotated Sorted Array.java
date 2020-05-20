@@ -1,43 +1,54 @@
 class Solution {
+
+    // [0,1,2,3,4,5,6,7]
+    // [4,5,6,7,0,1,2,3]
+    // [1,2,3,4,5,6,7,0]
+    
+    // Solution involves a binary search looking for the element
+    // Time complexity: O(log(n))
+    // Space complexity: O(1)
+    
     public int search(int[] nums, int target) {
-        
-        // T: (log n), binary search
         
         int start = 0;
         int end = nums.length - 1;
         
         while(start <= end) {
-            int midIndex = ((end - start) / 2) + start;
-            int midValue = nums[midIndex];
+            int middle = ((end - start) / 2) + start;
             
-            if(midValue == target)
-                return midIndex;
+            if(nums[middle] == target)
+                return middle;
             
-            if(midValue > target) {
-                if(nums[end] >= target) {
-                    start = midIndex + 1;
+            if(nums[start] < nums[end]) { // normal binary search, array is not rotated
+                if(nums[middle] > target) {
+                    end = middle - 1;
                 } else {
-                    end = midIndex -1;
+                    start = middle + 1;
                 }
-            } else { // midValue < target
-                if(nums[start] <= target) {
-                    end = midIndex - 1;
-                } else {
-                    start = midIndex + 1;
+            } else {
+                if(nums[middle] < nums[end]) {
+                    if(target > nums[middle] && target <= nums[end]) {
+                        start = middle + 1;
+                    } else {
+                        end = middle - 1;
+                    }
+                    continue;
                 }
+                
+                if(nums[start] < nums[middle]) {
+                    if(target >= nums[start] && target < nums[middle]) {
+                        end = middle - 1;
+                    } else {
+                        start = middle + 1;
+                    }
+                    continue;
+                }
+                
+                // in the case where no number was found (prevent infinite loop)
+                start++;
             }
         }
         
         return -1;
-        
-        
-        // Brute force approach, T: O(n)
-//         for(int i = 0; i < nums.length; i++) {
-//             if(nums[i] == target) {
-//                 return i;
-//             }
-//         }
-        
-//         return -1;
     }
 }
